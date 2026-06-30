@@ -1,26 +1,65 @@
 {
   "project_info": {
-    "project_number": "123456789012",
-    "project_id": "arewa-scope-placeholder",
-    "storage_bucket": "arewa-scope-placeholder.appspot.com"
+    "project_number": "196270071643",
+    "project_id": "arewascope-96f3f",
+    "storage_bucket": "arewascope-96f3f.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:123456789012:android:1234567890abcdef123456",
+        "mobilesdk_app_id": "1:196270071643:android:7df267702b858b7835847e",
         "android_client_info": {
-          "package_name": "com.arewascopenews.app"
+          "package_name": "com.arewascope.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "196270071643-ajobrcs3ibe55s1m1pnlo1f90gcnebmm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyDUMMY_PLACEHOLDER_KEY_REPLACE_THIS"
+          "current_key": "AIzaSyDyH7Lb7LBdZb5Cck_xxyB9WNqSJ49OR-o"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "196270071643-ajobrcs3ibe55s1m1pnlo1f90gcnebmm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:196270071643:android:d61ace16280c146d35847e",
+        "android_client_info": {
+          "package_name": "com.arewascopenews.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "196270071643-ajobrcs3ibe55s1m1pnlo1f90gcnebmm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyH7Lb7LBdZb5Cck_xxyB9WNqSJ49OR-o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "196270071643-ajobrcs3ibe55s1m1pnlo1f90gcnebmm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
