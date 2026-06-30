@@ -1,0 +1,59 @@
+plugins {
+    id 'com.android.application'
+    id 'com.google.gms.google-services'
+}
+
+def releaseKeystorePath = project.findProperty("RELEASE_STORE_FILE") ?: System.getenv("KEYSTORE_FILE")
+def releaseKeystorePassword = project.findProperty("RELEASE_STORE_PASSWORD") ?: System.getenv("KEYSTORE_PASSWORD")
+def releaseKeyAlias = project.findProperty("RELEASE_KEY_ALIAS") ?: System.getenv("KEY_ALIAS")
+def releaseKeyPassword = project.findProperty("RELEASE_KEY_PASSWORD") ?: System.getenv("KEY_PASSWORD")
+def releaseSigningReady = releaseKeystorePath != null && releaseKeystorePassword != null && releaseKeyAlias != null && releaseKeyPassword != null && file(releaseKeystorePath).exists()
+
+android {
+    namespace 'com.arewascopenews.app'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.arewascopenews.app'
+        minSdk 23
+        targetSdk 35
+        versionCode 81
+        versionName '1.8.1'
+    }
+
+    signingConfigs {
+        release {
+            if (releaseSigningReady) {
+                storeFile file(releaseKeystorePath)
+                storePassword releaseKeystorePassword
+                keyAlias releaseKeyAlias
+                keyPassword releaseKeyPassword
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix ''
+            versionNameSuffix '-debug'
+        }
+        release {
+            minifyEnabled false
+            shrinkResources false
+            if (releaseSigningReady) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation platform('com.google.firebase:firebase-bom:33.7.0')
+    implementation 'com.google.firebase:firebase-messaging'
+    implementation 'com.google.android.gms:play-services-ads:24.9.0'
+}

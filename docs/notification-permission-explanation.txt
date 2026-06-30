@@ -1,0 +1,6 @@
+In-app notification permission message:
+
+Allow breaking news alerts?
+Arewa Scope uses notifications to send latest news and important updates. You can turn this off anytime from your phone settings.
+
+Use this same idea in your Play Store Data Safety / app description if asked why the app requests notification permission.

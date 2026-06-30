@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Arewa Scope</string>
+    <string name="notification_permission_title">Allow breaking news alerts?</string>
+    <string name="notification_permission_message">Arewa Scope uses notifications to send latest news and important updates. You can turn this off anytime from your phone settings.</string>
+
+    <!-- Real AdMob IDs configured -->
+    <string name="admob_app_id">ca-app-pub-2796673279706676~4449464201</string>
+    <string name="admob_banner_ad_unit_id">ca-app-pub-2796673279706676/4430802813</string>
+</resources>
