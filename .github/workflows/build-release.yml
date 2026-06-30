@@ -1,0 +1,92 @@
+name: Build Signed Release APK and AAB
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    name: Build Signed Release
+    runs-on: ubuntu-latest
+
+    env:
+      KEYSTORE_FILE: ${{ github.workspace }}/upload-keystore.jks
+      KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+
+      - name: Check release signing secrets
+        shell: bash
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ] || [ -z "$KEYSTORE_PASSWORD" ] || [ -z "$KEY_ALIAS" ] || [ -z "$KEY_PASSWORD" ]; then
+            echo "Missing release signing secrets. Add KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_ALIAS, and KEY_PASSWORD in GitHub Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+
+      - name: Decode upload keystore
+        shell: bash
+        run: |
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE_FILE"
+          ls -lh "$KEYSTORE_FILE"
+
+      - name: Build signed release APK and AAB
+        shell: bash
+        run: |
+          set +e
+          gradle --no-daemon clean assembleRelease bundleRelease             -PRELEASE_STORE_FILE="$KEYSTORE_FILE"             -PRELEASE_STORE_PASSWORD="$KEYSTORE_PASSWORD"             -PRELEASE_KEY_ALIAS="$KEY_ALIAS"             -PRELEASE_KEY_PASSWORD="$KEY_PASSWORD"             --stacktrace --info 2>&1 | tee release-build-log.txt
+          BUILD_EXIT_CODE=${PIPESTATUS[0]}
+          echo "BUILD_EXIT_CODE=$BUILD_EXIT_CODE" >> $GITHUB_ENV
+          exit 0
+
+      - name: Show important error lines
+        if: always()
+        shell: bash
+        run: |
+          echo "========= RELEASE ERROR SUMMARY ========="
+          grep -n -i -E "FAILURE|Execution failed|Caused by|AAPT|error:|Exception|Could not|Unable|Duplicate|Manifest merger|compileReleaseJava|google-services|signing|keystore|password|alias" release-build-log.txt | head -240 || true
+          echo "========= END RELEASE ERROR SUMMARY ========="
+
+      - name: Upload release build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: arewa-release-build-log
+          path: release-build-log.txt
+
+      - name: Upload signed release APK
+        if: env.BUILD_EXIT_CODE == '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ArewaScope-signed-release-apk
+          path: app/build/outputs/apk/release/app-release.apk
+
+      - name: Upload signed release AAB
+        if: env.BUILD_EXIT_CODE == '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ArewaScope-signed-release-aab
+          path: app/build/outputs/bundle/release/app-release.aab
+
+      - name: Fail workflow if release build failed
+        if: env.BUILD_EXIT_CODE != '0'
+        run: exit 1
